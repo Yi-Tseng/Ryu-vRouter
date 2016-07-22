@@ -33,6 +33,15 @@ class FpmHeader(packet_base.PacketBase):
     @classmethod
     def parser(cls, buf):
         version, msg_type, length = struct.unpack_from(cls._PACK_STR, buf)
+
+        if version != 1:
+            # support version 1 only
+            return (None, None, buf)
+
+        if msg_type != 1:
+            # support netlink only
+            return (None, None, buf)
+
         return (cls(version, msg_type, length),
                 Netlink,
                 buf[FpmHeader._MIN_LEN:])
